@@ -4,12 +4,14 @@ import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
 import { useEffect } from "react";
 import personService from "./services/persons";
-
+import Notification from "./components/Notification";
+import './index.css'
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [newFilter, setNewFilter] = useState("");
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => {
@@ -54,6 +56,10 @@ const App = () => {
         changeNumber(existingPerson.id, newNumber);
         setNewName("");
         setNewNumber("");
+        setMessage(`Changed ${existingPerson.name}'s number`);
+        setTimeout(() => {
+          setMessage(null);
+        }, 5000);
       }
       return;
     }
@@ -65,6 +71,10 @@ const App = () => {
       setPersons(persons.concat(returnedPerson));
       setNewName("");
       setNewNumber("");
+      setMessage(`Added ${returnedPerson.name}`);
+      setTimeout(() => {
+        setMessage(null);
+      }, 5000);
     });
   };
   const handleNameChange = (event) => {
@@ -80,6 +90,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message}/>
       <Filter newFilter={newFilter} handleFilterChange={handleFilterChange} />
       <h3>Add a new</h3>
       <PersonForm
