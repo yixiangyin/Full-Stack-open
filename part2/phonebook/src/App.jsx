@@ -5,13 +5,13 @@ import Persons from "./components/Persons";
 import { useEffect } from "react";
 import personService from "./services/persons";
 import Notification from "./components/Notification";
-import './index.css'
+
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [newFilter, setNewFilter] = useState("");
-  const [message, setMessage] = useState(null);
+  const [message, setMessage] = useState({ text: null, isError: false });
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => {
@@ -32,11 +32,20 @@ const App = () => {
   const changeNumber = (id, number) => {
     const person = persons.find((p) => p.id === id);
     const changedPerson = { ...person, number: number };
-    personService.update(id, changedPerson).then((returnPerson) => {
-      setPersons(
-        persons.map((person) => (person.id === id ? returnPerson : person))
-      );
-    });
+    personService
+      .update(id, changedPerson)
+      .then((returnPerson) => {
+        setPersons(
+          persons.map((person) => (person.id === id ? returnPerson : person))
+        );
+      })
+      .catch((error) => {
+        // console.log(error);
+        setMessage({
+          text: `Information of ${person.name} has already been removed from server`,
+          isError: true,
+        });
+      });
   };
 
   const personsToShow = persons.filter((person) =>
@@ -56,9 +65,12 @@ const App = () => {
         changeNumber(existingPerson.id, newNumber);
         setNewName("");
         setNewNumber("");
-        setMessage(`Changed ${existingPerson.name}'s number`);
+        setMessage({
+          text: `Changed ${existingPerson.name}'s number`,
+          isError: false,
+        });
         setTimeout(() => {
-          setMessage(null);
+          setMessage({text: null, isError: false});
         }, 5000);
       }
       return;
@@ -71,9 +83,9 @@ const App = () => {
       setPersons(persons.concat(returnedPerson));
       setNewName("");
       setNewNumber("");
-      setMessage(`Added ${returnedPerson.name}`);
+      setMessage({ text: `Added ${returnedPerson.name}`, isError: false });
       setTimeout(() => {
-        setMessage(null);
+        setMessage({ text: null, isError: false});
       }, 5000);
     });
   };
@@ -90,7 +102,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={message}/>
+      <Notification message={message.text} isError={message.isError} />
+
       <Filter newFilter={newFilter} handleFilterChange={handleFilterChange} />
       <h3>Add a new</h3>
       <PersonForm
