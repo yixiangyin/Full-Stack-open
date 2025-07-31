@@ -46,7 +46,7 @@ const App = () => {
         {filtered.length <= 10 &&
           filtered.length > 1 &&
           filtered.map((country) => {
-            return <CountryWithToggle country={country}/>;
+            return <CountryWithToggle key={country.name.common} country={country}/>;
           })}
         {filtered.length == 1 && (
           <Country country={filtered[0]}/>
