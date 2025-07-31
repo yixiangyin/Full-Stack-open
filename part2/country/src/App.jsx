@@ -1,6 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
+import Country from "./components/Country";
+import CountryWithToggle from "./components/CountryWithToggle";
 const App = () => {
   const [value, setValue] = useState("");
   const [countries, setCountries] = useState([]);
@@ -44,24 +46,10 @@ const App = () => {
         {filtered.length <= 10 &&
           filtered.length > 1 &&
           filtered.map((country) => {
-            return <p key={country.name.common}>{country.name.common}</p>;
+            return <CountryWithToggle country={country}/>;
           })}
         {filtered.length == 1 && (
-          <div>
-            <h1>{filtered[0].name.common}</h1>
-            <p>Capital {filtered[0].capital?.[0] ?? "N/A"}</p>
-            <p>Area {filtered[0].area}</p>
-            <h2>Languages</h2>
-            <ul>
-              {Object.values(filtered[0].languages).map((l) => {
-                return <li key={l}>{l}</li>;
-              })}
-            </ul>
-            <img
-              src={filtered[0].flags["png"]}
-              alt={filtered[0].flags["alt"]}
-            />
-          </div>
+          <Country country={filtered[0]}/>
         )}
       </div>
     </div>
