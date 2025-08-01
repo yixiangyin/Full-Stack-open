@@ -7,13 +7,15 @@ const App = () => {
   const [value, setValue] = useState("");
   const [countries, setCountries] = useState([]);
   const [filtered, setFiltered] = useState([]);
-
+  const [loading, setLoading] = useState(true);
+  const api_key = import.meta.env.VITE_WEATHER_KEY;
   useEffect(() => {
     axios
       .get(`https://studies.cs.helsinki.fi/restcountries/api/all`)
       .then((response) => {
         setCountries(Object.values(response.data));
-        console.log(countries);
+        setLoading(false);
+        // console.log(countries);
       });
   }, []);
 
@@ -39,19 +41,29 @@ const App = () => {
   return (
     <div>
       find countries <input value={value} onChange={onChange}></input>
-      <div>
-        {filtered.length > 10 && (
-          <p>Too many matches, specify another filter</p>
-        )}
-        {filtered.length <= 10 &&
-          filtered.length > 1 &&
-          filtered.map((country) => {
-            return <CountryWithToggle key={country.name.common} country={country}/>;
-          })}
-        {filtered.length == 1 && (
-          <Country country={filtered[0]}/>
-        )}
-      </div>
+      {loading ? (
+        <p>Loading countries...</p>
+      ) : (
+        <div>
+          {filtered.length > 10 && (
+            <p>Too many matches, specify another filter</p>
+          )}
+          {filtered.length <= 10 &&
+            filtered.length > 1 &&
+            filtered.map((country) => {
+              return (
+                <CountryWithToggle
+                  api_key={api_key}
+                  key={country.name.common}
+                  country={country}
+                />
+              );
+            })}
+          {filtered.length === 1 && (
+            <Country api_key={api_key} country={filtered[0]} />
+          )}
+        </div>
+      )}
     </div>
   );
 };
