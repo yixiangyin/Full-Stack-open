@@ -52,6 +52,11 @@ const App = () => {
     person.name.toLowerCase().includes(newFilter.toLowerCase())
   );
 
+  const clearForm = () => {
+    setNewName("");
+    setNewNumber("");
+  };
+
   const addPerson = (event) => {
     event.preventDefault();
     const existingPerson = persons.find((person) => person.name === newName);
@@ -63,14 +68,13 @@ const App = () => {
         )
       ) {
         changeNumber(existingPerson.id, newNumber);
-        setNewName("");
-        setNewNumber("");
+        clearForm();
         setMessage({
           text: `Changed ${existingPerson.name}'s number`,
           isError: false,
         });
         setTimeout(() => {
-          setMessage({text: null, isError: false});
+          setMessage({ text: null, isError: false });
         }, 5000);
       }
       return;
@@ -81,11 +85,10 @@ const App = () => {
     };
     personService.create(personObject).then((returnedPerson) => {
       setPersons(persons.concat(returnedPerson));
-      setNewName("");
-      setNewNumber("");
+      clearForm();
       setMessage({ text: `Added ${returnedPerson.name}`, isError: false });
       setTimeout(() => {
-        setMessage({ text: null, isError: false});
+        setMessage({ text: null, isError: false });
       }, 5000);
     });
   };
