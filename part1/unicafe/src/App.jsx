@@ -4,11 +4,12 @@ const Button = (props) => {
   return <button onClick={props.onClick}>{props.text}</button>;
 };
 
-const StatisticLine = (props) => {
+const StatisticLine = ({ label, value }) => {
   return (
-    <p>
-      {props.text} {props.value}
-    </p>
+    <tr>
+      <td>{label}</td>
+      <td>{value}</td>
+    </tr>
   );
 };
 
@@ -17,51 +18,36 @@ const Statistics = (props) => {
   const neutral = props.neutral;
   const bad = props.bad;
   const total = good + neutral + bad;
-  const avg = total == 0 ? 0 : (good + bad * -1) / total;
-  const positive = total == 0 ? 0 : (good / total) * 100;
+  const avg = (good - bad) / total;
+  const positive = (good * 100) / total;
+
+  if (total === 0) {
+    return (
+      <div>
+        <h1>statistics</h1>
+        <p>No feedback given</p>
+      </div>
+    );
+  }
+
   return (
-    <>
+    <div>
       <h1>statistics</h1>
-      {total == 0 ? (
-        <h4>No feedback given</h4>
-      ) : (
-        <table>
-          <tbody>
-            <tr>
-              <td>good {good}</td>
-            </tr>
-            <tr>
-              <td>neutral {neutral}</td>
-            </tr>
-            <tr>
-              <td>bad {bad}</td>
-            </tr>
-            <tr>
-              <td>all {total}</td>
-            </tr>
-            <tr>
-              <td>average {avg}</td>
-            </tr>
-            <tr>
-              <td>positive {positive} %</td>
-            </tr>
-          </tbody>
-        </table>
-        // <>
-        //   <StatisticLine text="good" value={props.good} />
-        //   <StatisticLine text="neutral" value={props.neutral} />
-        //   <StatisticLine text="bad" value={props.bad} />
-        //   <StatisticLine text="all" value={total} />
-        //   <StatisticLine text="average" value={avg} />
-        //   <StatisticLine text="positive" value={positive} />
-        // </>
-      )}
-    </>
+      <table>
+        <tbody>
+          <StatisticLine label={"good"} value={good} />
+          <StatisticLine label={"neutral"} value={neutral} />
+          <StatisticLine label={"bad"} value={bad} />
+          <StatisticLine label={"all"} value={total} />
+          <StatisticLine label={"average"} value={avg} />
+          <StatisticLine label={"positive"} value={positive + " %"} />
+        </tbody>
+      </table>
+    </div>
   );
 };
 
 const App = () => {
-  // save clicks of each button to its own state
   const [good, setGood] = useState(0);
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
