@@ -1,8 +1,11 @@
-const Filter = (props) => {
+const Filter = ({ filter, setFilter }) => {
   return (
     <div>
       filter shown with{" "}
-      <input value={props.newFilter} onChange={props.handleFilterChange} />
+      <input
+        value={filter}
+        onChange={(event) => setFilter(event.target.value)}
+      />
     </div>
   );
 };
