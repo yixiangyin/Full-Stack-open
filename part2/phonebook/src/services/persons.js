@@ -10,8 +10,9 @@ const create = (newObject) => {
 };
 
 const update = (personObject) => {
+  const url = `${baseUrl}/${personObject.id}`
   return axios
-    .put(`${baseUrl}/${personObject.id}`, personObject)
+    .put(url, personObject)
     .then((response) => response.data);
 };
 
